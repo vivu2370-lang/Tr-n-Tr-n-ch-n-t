@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIỆT PHƯƠNG - BẢO NAM</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #080c14;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Nền sao lấp lánh */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+        }
+
+        .star {
+            position: absolute;
+            background: #00f0ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+            animation: blink 1.5s infinite ease-in-out alternate, fall 4s linear infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.4); }
+        }
+
+        @keyframes fall {
+            0% { top: -10px; }
+            100% { top: 100vh; }
+        }
+
+        /* Container chính */
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px 18px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            border: 2px solid transparent;
+            animation: borderGlow 3s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { box-shadow: 0 0 15px #38bdf8; border-color: #38bdf8; }
+            50% { box-shadow: 0 0 25px #a855f7; border-color: #a855f7; }
+            100% { box-shadow: 0 0 15px #ec4899; border-color: #ec4899; }
+        }
+
+        h1 {
+            color: #38bdf8;
+            font-size: 20px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            text-shadow: 0 0 12px rgba(56, 189, 248, 0.9);
+            letter-spacing: 1px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        /* Khung phát nhạc kiểu Chrome Player nằm ngay dưới tên */
+        .custom-audio-player {
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 30px;
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-pause-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+        }
+
+        .time-display {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        .seek-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #cbd5e1;
+            height: 5px;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .seek-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #0284c7;
+            cursor: pointer;
+        }
+
+        .volume-icon {
+            font-size: 16px;
+            color: #475569;
+        }
+
+        /* Khung chứa các nút TikTok */
+        .tiktok-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .tiktok-link-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: #0f172a;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            width: 100%;
+            max-width: 260px;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .tiktok-link-box:active {
+            transform: scale(0.95);
+        }
+
+        /* Thanh chọn 3 trang */
+        .tab-menu {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 0;
+            background: rgba(51, 65, 85, 0.8);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: #ffffff;
+            border-color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        /* Ẩn / Hiện trang */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Danh sách Card */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .item-card {
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .item-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+
+        .item-title {
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .script-box {
+            background: #030712;
+            color: #38bdf8;
+            font-family: monospace;
+            font-size: 11px;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            text-align: left;
+            word-break: break-all;
+            max-height: 90px;
+            overflow-y: auto;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-download {
+            display: inline-block;
+            width: 100%;
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-download:active {
+            transform: scale(0.96);
+            background: #0284c7;
+        }
+
+        /* Bảng hiển thị Giờ Việt Nam */
+        .time-box {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            border-radius: 10px;
+            color: #38bdf8;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="starContainer"></div>
+
+    <!-- Thẻ Audio ẩn tích hợp link nhạc của em -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://files.catbox.moe/a3tb8t.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <h1>✨ VIỆT PHƯƠNG - BẢO NAM ✨</h1>
+        <p class="subtitle">Trang web lưu trữ & ứng dụng cá nhân</p>
+        
+        <!-- Khung phát nhạc mô phỏng giống hệt Google Chrome Player nằm ngay dưới tên -->
+        <div class="custom-audio-player">
+            <button class="play-pause-btn" id="playBtn" onclick="togglePlayMusic()">▶</button>
+            <span class="time-display" id="currentTime">0:00</span>
+            <input type="range" class="seek-slider" id="seekSlider" value="0" max="100" oninput="seekAudio(this.value)">
+            <span class="time-display" id="durationTime">0:20</span>
+            <span class="volume-icon">🔊</span>
+        </div>
+
+        <!-- 2 ID TikTok -->
+        <div class="tiktok-group">
+            <a href="https://www.tiktok.com/@c.ngc345" class="tiktok-link-box" target="_blank">
+                🎵 TikTok: @c.ngc345
+            </a>
+            <a href="https://www.tiktok.com/@12tuoi_ba_kai" class="tiktok-link-box" target="_blank">
+                🎵 TikTok: @12tuoi_ba_kai
+            </a>
+        </div>
+
+        <!-- Thanh chọn 3 trang -->
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="switchPage('page1', this)">FREE FIRE</button>
+            <button class="tab-btn" onclick="switchPage('page2', this)">ROBLOX</button>
+            <button class="tab-btn" onclick="switchPage('page3', this)">HACK iOS NO KEY</button>
+        </div>
+
+        <!-- TAB 1: MOD & PROXY FREE FIRE -->
+        <div id="page1" class="page-content active">
+            <div class="item-list">
+                
+                <!-- MTH V33 -->
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80" class="item-img" alt="MTH V33">
+                    <div class="item-title">MTH V33</div>
+                    <a href="https://link4sub.com/bNdaPiSJK4" class="btn-download" target="_blank">TRUY CẬP NGAY</a>
+                </div>
+
+                <!-- JENNY MODE -->
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80" class="item-img" alt="Jenny Mode">
+                    <div class="item-title">JENNY MODE</div>
+                    <a href="https://link4sub.com/notes/w6BS" class="btn-download" target="_blank">TRUY CẬP NGAY</a>
+                </div>
+
+                <!-- PROXY AIMLAG -->
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80" class="item-img" alt="Proxy Aimlag">
+                    <div class="item-title">PROXY AIMLAG</div>
+                    <a href="https://link4sub.com/notes/Ouij" class="btn-download" target="_blank">TRUY CẬP NGAY</a>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop&q=80" class="item-img" alt="PROXY V3">
+                    <div class="item-title">PROXY V3</div>
+                    <a href="https://www.mediafire.com/file/37wv0m6i1aib58j/proxy-v3.apk/file?dkey=1m7mmd4gtfq&r=1718" class="btn-download" target="_blank">TẢI XUỐNG</a>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format&fit=crop&q=80" class="item-img" alt="THUẬN MOD NO KEY">
+                    <div class="item-title">THUẬN MOD NO KEY</div>
+                    <a href="https://www.mediafire.com/file/qj8lilvz8phtduh/aThuan_Mod_B%25E1%25BA%25A3n_No_Key.zip/file?dkey=cxntd26trdc&r=379" class="btn-download" target="_blank">TẢI XUỐNG</a>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&auto=format&fit=crop&q=80" class="item-img" alt="YX PROXY CR">
+                    <div class="item-title">YX PROXY CR</div>
+                    <a href="https://www.mediafire.com/file/79663moclbvvbqj/YX+Proxy+CR.apk/file" class="btn-download" target="_blank">TẢI XUỐNG</a>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1563089145-599997674d42?w=800&auto=format&fit=crop&q=80" class="item-img" alt="THE KINH V189 FIT">
+                    <div class="item-title">THE KINH V189 FIT</div>
+                    <a href="https://zufile.com/download/LHGBttZ9z7" class="btn-download" target="_blank">TẢI XUỐNG</a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: ROBLOX HUB -->
+        <div id="page2" class="page-content">
+            <div class="item-list">
+                
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&auto=format&fit=crop&q=80" class="item-img" alt="LUAEGIS HUB">
+                    <div class="item-title">LUAEGIS HUB</div>
+                    <div class="script-box">loadstring(game:HttpGet("https://luaegis.net/scripts/v4/loaders/7444caab-1544-4105-9f75-ac4a2d02e423.lua"))()</div>
+                    <button class="btn-download" onclick="copyScript(this)">SAO CHÉP SCRIPT</button>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&auto=format&fit=crop&q=80" class="item-img" alt="DELTA ROBLOX VN">
+                    <div class="item-title">DELTA ROBLOX VN</div>
+                    <a href="https://www.mediafire.com/file/s35f8ti85s8weym/Delta+X+VNG+V2.741.apk/file" class="btn-download" target="_blank">TẢI XUỐNG</a>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80" class="item-img" alt="BYPASS KEY DELTA">
+                    <div class="item-title">BYPASS KEY DELTA</div>
+                    <a href="https://izen.lol/" class="btn-download" target="_blank">TRUY CẬP NGAY</a>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&auto=format&fit=crop&q=80" class="item-img" alt="Teddy Hub">
+                    <div class="item-title">TEDDY HUB</div>
+                    <div class="script-box">Repeat task.wait() until game:IsLoaded() and game:GetService("Players") and game.Players.LocalPlayer and game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/teddyhubdev/diepvy/refs/heads/main/TeddyHub.lua"))()</div>
+                    <button class="btn-download" onclick="copyScript(this)">SAO CHÉP SCRIPT</button>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop&q=80" class="item-img" alt="Night Hub">
+                    <div class="item-title">NIGHT HUB</div>
+                    <div class="script-box">loadstring(game:HttpGet("https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/StealAnEggs.luau"))()</div>
+                    <button class="btn-download" onclick="copyScript(this)">SAO CHÉP SCRIPT</button>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&auto=format&fit=crop&q=80" class="item-img" alt="REALKID HUB">
+                    <div class="item-title">REALKID HUB</div>
+                    <div class="script-box">loadstring(game:HttpGet("https://raw.githubusercontent.com/realkidhub/realkid/refs/heads/main/main.lua"))()</div>
+                    <button class="btn-download" onclick="copyScript(this)">SAO CHÉP SCRIPT</button>
+                </div>
+
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&auto=format&fit=crop&q=80" class="item-img" alt="CHILLI HUB">
+                    <div class="item-title">CHILLI HUB</div>
+                    <div class="script-box">loadstring(game:HttpGet("https://raw.githubusercontent.com/chillihub/chilli/refs/heads/main/main.lua"))()</div>
+                    <button class="btn-download" onclick="copyScript(this)">SAO CHÉP SCRIPT</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 3: HACK iOS NO KEY -->
+        <div id="page3" class="page-content">
+            <div class="item-list">
+                <div class="item-card">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&auto=format&fit=crop&q=80" class="item-img" alt="Hack iOS No Key">
+                    <div class="item-title">HACK iOS NO KEY</div>
+                    <a href="https://fnote.net/notes/p84R13" class="btn-download" target="_blank">TRUY CẬP NGAY</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng hiển thị Giờ Việt Nam -->
+        <div class="time-box" id="vietnamClock">
+            🕒 Giờ Việt Nam: Đang tải...
+        </div>
+
+    </div>
+
+    <script>
+        // Đồng hồ thời gian thực Giờ Việt Nam
+        function updateClock() {
+            const now = new Date();
+            const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' };
+            const timeString = now.toLocaleString('vi-VN', options);
+            document.getElementById('vietnamClock').innerText = "🕒 Giờ VN: " + timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Hạt sao lấp lánh
+        const starContainer = document.getElementById('starContainer');
+        for (let i = 0; i < 40; i++) {
+            let star = document.createElement('div');
+            star.className = 'star';
+            let size = Math.random() * 4 + 2;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            starContainer.appendChild(star);
+        }
+
+        // Xử lý trình phát nhạc tùy chỉnh giống Chrome Player
+        const music = document.getElementById("bgMusic");
+        const playBtn = document.getElementById("playBtn");
+        const seekSlider = document.getElementById("seekSlider");
+        const currentTimeText = document.getElementById("currentTime");
+        const durationTimeText = document.getElementById("durationTime");
+
+        function formatTime(seconds) {
+            let minutes = Math.floor(seconds / 60);
+            let secs = Math.floor(seconds % 60);
+            return minutes + ":" + (secs < 10 ? "0" : "") + secs;
+        }
+
+        music.addEventListener("loadedmetadata", () => {
+            durationTimeText.innerText = formatTime(music.duration);
+            seekSlider.max = music.dura
